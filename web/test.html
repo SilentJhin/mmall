@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+    <input type="text" id="username">
+    <input type="button" onclick="checkUsername()" value="check">
+    <div id="result">
+        
+    </div>
+    <script>
+        var httpRequest;
+        function checkUsername() {
+            if(window.XMLHttpRequest) {
+                // IE6 ++
+                httpReqeust = new XMLHttpRequest();
+            } else if (window.ActiveXObject) {
+                // IE6 --
+                httpReqeust = new ActiveXObject();
+            }
+            // 创建http请求
+            httpRequest.open("POST", "Servlet1", true);
+            httpRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            // 指定回调函数
+            httpRequest.onreadystatechange = response22;
+
+            var name = document.getElementById("username").value;
+            // 发送http请求
+            httpRequest.send("username:" + name);
+        }
+        function response22 () {
+            if(httpRequest.readyState==4) {
+                if (httpRequest.status==200) {
+                    var text = httpRequest.responseText;
+                    var div = document.getElementById("result");
+                    div.innerText = text;
+                }
+            }
+        }
+    </script>
+</body>
+</html>
