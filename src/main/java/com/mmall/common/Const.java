@@ -58,7 +58,6 @@ public class Const {
         ORDER_SUCCESS(50,"订单完成"),
         ORDER_CLOSE(60,"订单关闭");
 
-
         OrderStatusEnum(int code,String value){
             this.code = code;
             this.value = value;
@@ -141,4 +140,8 @@ public class Const {
         }
 
     }
+
+
+
+
 }

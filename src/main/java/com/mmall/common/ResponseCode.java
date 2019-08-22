@@ -18,11 +18,11 @@ public enum ResponseCode {
         this.desc = desc;
     }
 
-    public int getCode() {
+    public int getCode(){
         return code;
     }
-
-    public String getDesc() {
+    public String getDesc(){
         return desc;
     }
+
 }

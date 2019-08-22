@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Created by geely
+ * Created by SilentJhin
  */
 public class FTPUtil {
 
@@ -33,7 +33,6 @@ public class FTPUtil {
         logger.info("开始连接ftp服务器,结束上传,上传结果:{}");
         return result;
     }
-
 
     private boolean uploadFile(String remotePath,List<File> fileList) throws IOException {
         boolean uploaded = true;

@@ -115,7 +115,7 @@ public class UserServiceImpl implements IUserService{
         if (StringUtils.isBlank(forgetToken)){
             return ServerResponse.createByErrorMessage("参数错误.token未传递");
         }
-        ServerResponse validResponse = this.checkValid(username,Const.USERNAME);
+        ServerResponse validResponse = this.checkValid(username, Const.USERNAME);
         if (validResponse.isSuccess()){
             return ServerResponse.createByErrorMessage("用户不存在");
         }
@@ -177,5 +177,17 @@ public class UserServiceImpl implements IUserService{
         return ServerResponse.createBySuccess(user);
     }
 
+    //backend
 
+    /**
+     * 校验是否是管理员
+     * @param user
+     * @return
+     */
+    public ServerResponse checkAdminRole(User user){
+        if(user != null && user.getRole().intValue() == Const.Role.ROLE_ADMIN){
+            return ServerResponse.createBySuccess();
+        }
+        return ServerResponse.createByError();
+    }
 }

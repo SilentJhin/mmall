@@ -8,51 +8,56 @@ import java.io.Serializable;
 /**
  * Created by SilentJhin.
  */
-@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
-//保证xuliehjson时若为null对象则key也会消失
+@JsonSerialize(include =  JsonSerialize.Inclusion.NON_NULL)
+//保证序列化json的时候,如果是null的对象,key也会消失
 public class ServerResponse<T> implements Serializable {
 
     private int status;
     private String msg;
     private T data;
+    // 构造2若data为string类型，可能与构造4 重复；
+    // 通过 下面的一系列public方法  来规避此问题
 
+    // 构造1
     private ServerResponse(int status){
         this.status = status;
     }
 
+    // 构造2
     private ServerResponse(int status,T data){
         this.status = status;
         this.data = data;
     }
 
-    private ServerResponse(int status, String msg, T data){
+    // 构造3
+    private ServerResponse(int status,String msg,T data){
         this.status = status;
         this.msg = msg;
         this.data = data;
     }
 
-    private ServerResponse(int status, String msg){
+    // 构造4
+    private ServerResponse(int status,String msg){
         this.status = status;
         this.msg = msg;
     }
 
     @JsonIgnore
-    //使得不在json序列化结果中
+    //使之不在json序列化结果当中
     public boolean isSuccess(){
         return this.status == ResponseCode.SUCCESS.getCode();
     }
 
-    public int getStatus() {
+    public int getStatus(){
         return status;
     }
-
-    public String getMsg() {
+    public T getData(){
+        return data;
+    }
+    public String getMsg(){
         return msg;
     }
 
-    public T getData() {
-        return data;
-    }
 
     public static <T> ServerResponse<T> createBySuccess(){
         return new ServerResponse<T>(ResponseCode.SUCCESS.getCode());
@@ -66,34 +71,22 @@ public class ServerResponse<T> implements Serializable {
         return new ServerResponse<T>(ResponseCode.SUCCESS.getCode(),data);
     }
 
-    //当需要msg作为data时调用此方法 通过方法重载规避构造器中无法使得string类型作为data保存
     public static <T> ServerResponse<T> createBySuccess(String msg,T data){
         return new ServerResponse<T>(ResponseCode.SUCCESS.getCode(),msg,data);
     }
 
     public static <T> ServerResponse<T> createByError(){
-        return new ServerResponse<T>(ResponseCode.ERROR.getCode(),ResponseCode.ERROR.getDesc());
+        return new ServerResponse<T>(
+                ResponseCode.ERROR.getCode(),ResponseCode.ERROR.getDesc());
     }
 
     public static <T> ServerResponse<T> createByErrorMessage(String errorMessage){
         return new ServerResponse<T>(ResponseCode.ERROR.getCode(),errorMessage);
     }
 
-    public static <T> ServerResponse<T> createByErrorCodeMessage(int errorCode,String errorMessage){
+    public static <T> ServerResponse<T> createByErrorCodeMessage(
+            int errorCode,String errorMessage){
         return new ServerResponse<T>(errorCode,errorMessage);
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

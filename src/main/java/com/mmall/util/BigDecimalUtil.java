@@ -3,14 +3,13 @@ package com.mmall.util;
 import java.math.BigDecimal;
 
 /**
- * Created by geely
+ * Created by SilentJhin
  */
 public class BigDecimalUtil {
 
     private BigDecimalUtil(){
 
     }
-
 
     public static BigDecimal add(double v1,double v2){
         BigDecimal b1 = new BigDecimal(Double.toString(v1));
