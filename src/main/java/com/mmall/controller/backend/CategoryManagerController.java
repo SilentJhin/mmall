@@ -40,10 +40,10 @@ public class CategoryManagerController {
             String categoryName, @RequestParam(value = "parentId",defaultValue = "0") int parentId){
         // todo AOP 判断登录
         User user = null;
-        int a = 1;
-        int b = 2;
-        int c = 3;
-        int d = 4;
+        int a = 4;
+        int b = 3;
+        int c = 2;
+        int d = 1;
 
         if(user == null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录,请登录");
