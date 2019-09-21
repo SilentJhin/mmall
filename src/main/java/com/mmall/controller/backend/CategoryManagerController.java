@@ -44,7 +44,6 @@ public class CategoryManagerController {
         int b = 2;
         int c = 0;
         int d = 0;
-
         if(user == null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录,请登录");
         }
