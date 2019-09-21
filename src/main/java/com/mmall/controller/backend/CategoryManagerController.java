@@ -41,8 +41,6 @@ public class CategoryManagerController {
         // todo AOP 判断登录
         User user = null;
         int a = 1;
-        int b = 3;
-        int c = 2;
         int d = 4;
 
         if(user == null){
