@@ -64,7 +64,7 @@ public class CategoryManagerController {
     public ServerResponse setCategoryName(
             HttpSession session,Integer categoryId,String categoryName){
         // todo AOP 判断登录
-        User user = new User();//(User)session.getAttribute(Const.CURRENT_USER);
+        User user = null;//(User)session.getAttribute(Const.CURRENT_USER);
         if(user == null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录,请登录");
         }
