@@ -34,6 +34,7 @@ public class CookieUtil {
         Cookie ck = new Cookie(COOKIE_NAME, token);
         ck.setDomain(COOKIE_DOMAIN);
         ck.setPath("/"); // 代表设置在根目录
+        ck.setHttpOnly(true); // 不能通过脚本访问cookie
         // 如果maxage不设置，cookie就不会写入硬盘而是写在内存里，只在当前页面有效
         ck.setMaxAge(60 * 60 * 24 * 265);// -1 永久 单位是秒
         log.info("write cookieName:{}, cookieValue: {}", ck.getName(), ck.getValue());
