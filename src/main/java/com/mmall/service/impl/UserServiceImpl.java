@@ -2,11 +2,11 @@ package com.mmall.service.impl;
 
 import com.mmall.common.Const;
 import com.mmall.common.ServerResponse;
-import com.mmall.common.TokenCache;
 import com.mmall.dao.UserMapper;
 import com.mmall.pojo.User;
 import com.mmall.service.IUserService;
 import com.mmall.util.MD5Util;
+import com.mmall.util.RedisPoolUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -101,15 +101,34 @@ public class UserServiceImpl implements IUserService{
         return ServerResponse.createByErrorMessage("密码问题为空");
     }
 
+    // 忘记密码&重置密码
+    // 1 checkAnswer
+    //  传入用户名 问题 答案 校验
+    //  设置有有效期的 forgetToken token放在服务器的 GuavaCache 里
+    //  返回forgetToken
+    //      token的作用是 防止其他人拿到这个forgetToken去恶意请求接口修改他人的密码
+    // 2 forgetResetPassword
+    //  传入用户名 新密码 forgetToken 校验
+    //  forgetToken超过了有效期就会被清除 以此校验前端传来的forgetToken
+    //  校验成功后 修改密码
+
+    /** 集群衍生出的问题：
+     * 1 用户点击忘记密码，请求服务器1，它将token保存在本服务器的 GuacaCache 里
+     * 2 用户提交新密码 请求服务器2，这个服务器里的 GuavaCache 里没有保存 第一步的 token 提交就会报错 token无效或者过期
+     *  解决方法：
+     *  将生成的token放到redis里。
+     */
     public ServerResponse<String> checkAnswer(String username,String question,String answer){
         int resultCount = userMapper.checkAnswer(username,question,answer);
         if (resultCount>0){
             String forgetToken = UUID.randomUUID().toString();
-            TokenCache.setKey(TokenCache.TOKEN_PREFIX+username,forgetToken);
+            //TokenCache.setKey(TokenCache.TOKEN_PREFIX+username,forgetToken);
+            RedisPoolUtil.setEx(Const.TOKEN_PREFIX+username, forgetToken, 60*30);
             return ServerResponse.createBySuccess(forgetToken);
         }
         return ServerResponse.createByErrorMessage("问题答案错误");
     }
+
 
     public ServerResponse<String> forgetResetPassword(String username,String passwordNew,String forgetToken){
         if (StringUtils.isBlank(forgetToken)){
@@ -119,7 +138,8 @@ public class UserServiceImpl implements IUserService{
         if (validResponse.isSuccess()){
             return ServerResponse.createByErrorMessage("用户不存在");
         }
-        String token = TokenCache.getKey(TokenCache.TOKEN_PREFIX+username);
+        //String token = TokenCache.getKey(TokenCache.TOKEN_PREFIX+username);
+        String token = RedisPoolUtil.get(Const.TOKEN_PREFIX+username);
         if (StringUtils.isBlank(token)){
             return ServerResponse.createByErrorMessage("token无效或者过期");
         }
