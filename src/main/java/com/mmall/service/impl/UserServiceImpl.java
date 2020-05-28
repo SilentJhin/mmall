@@ -101,13 +101,13 @@ public class UserServiceImpl implements IUserService{
         return ServerResponse.createByErrorMessage("密码问题为空");
     }
 
-    // 忘记密码&重置密码
-    // 1 checkAnswer
+    // &
+    // 1 忘记密码checkAnswer
     //  传入用户名 问题 答案 校验
     //  设置有有效期的 forgetToken token放在服务器的 GuavaCache 里
     //  返回forgetToken
     //      token的作用是 防止其他人拿到这个forgetToken去恶意请求接口修改他人的密码
-    // 2 forgetResetPassword
+    // 2 重置密码 forgetResetPassword
     //  传入用户名 新密码 forgetToken 校验
     //  forgetToken超过了有效期就会被清除 以此校验前端传来的forgetToken
     //  校验成功后 修改密码
@@ -122,7 +122,9 @@ public class UserServiceImpl implements IUserService{
         int resultCount = userMapper.checkAnswer(username,question,answer);
         if (resultCount>0){
             String forgetToken = UUID.randomUUID().toString();
+            // 原来的 token 保存在服务器上
             //TokenCache.setKey(TokenCache.TOKEN_PREFIX+username,forgetToken);
+            // 现在放到redis里面
             RedisPoolUtil.setEx(Const.TOKEN_PREFIX+username, forgetToken, 60*30);
             return ServerResponse.createBySuccess(forgetToken);
         }
