@@ -47,6 +47,8 @@ public class UserController {
         //service-->mybatis-->dao
         ServerResponse<User> response = iUserService.login(username,password);
         if (response.isSuccess()){
+            // 重构后的对业务代码仍然有侵入
+            // todo 使用spring session 进行解耦
             CookieUtil.writeLoginToken(httpServletResponse, session.getId());
             //String cookieValue = CookieUtil.readLoginToken(httpServletRequest);
             //CookieUtil.delLoginToken(httpServletRequest, httpServletResponse);
